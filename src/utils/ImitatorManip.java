@@ -133,9 +133,9 @@ public class ImitatorManip {
      * @return variable to the edited file
      */
     public static File createEditedTA(File inputFile) {
-        String inputName = FilesManip.getNameWithoutExtension(inputFile.getName());
-        String outputName = String.format("%s_edited.imi", inputName);
+        String outputName = Params.nameOfEditedTA(inputFile);
         File outputFile = FilesManip.createFileNamed(outputName);
+
         try {
             Scanner scanner = new Scanner(inputFile);
             String init_keyword = "init := {"; //TODO: Move to KEYWORD
@@ -261,15 +261,12 @@ public class ImitatorManip {
      * @param isPrivate Has reachability to be performed for public or private runs?
      * @return File object*/
     public static File createReachFile(File inputFile, boolean isPrivate) {
-        String automatonName = getName(inputFile);
-        String inputName = FilesManip.getNameWithoutExtension(inputFile.getName());
+        String automatonName = ImitatorManip.getName(inputFile);
         String fileName;
         if (isPrivate) {
-            fileName = String.format("reachPriv_%s.imiprop",
-                    inputName);
+            fileName = Params.nameOfPrivateReachProperty(inputFile);
         } else {
-            fileName = String.format("reachPub_%s.imiprop",
-                    inputName);
+            fileName = Params.nameOfPublicReachProperty(inputFile);
         }
         File myObj = FilesManip.createFileNamed(fileName);
         try {

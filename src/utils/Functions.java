@@ -39,8 +39,7 @@ public class Functions {
             output_line.add(action);
         }
 
-        String fileNameWithoutExtension = FilesManip.getNameWithoutExtension(inputFile.getName());
-        String fileName = String.format("%s_%s.imi", fileNameWithoutExtension, joiner);
+        String fileName = Params.nameOfSubTA(inputFile, joiner);
         File outputFile = FilesManip.createFileNamed(fileName);
 
         try {
@@ -85,7 +84,6 @@ public class Functions {
         for (Set<String> subset : subsets) {
             subsetFiles.add(createSubsetTA(editedFile, subset));
         }
-
 
         return subsetFiles;
     }
