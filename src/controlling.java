@@ -44,10 +44,6 @@ public class controlling {
 
 
         File inputTA = new File(file_name);
-        /* String PathImitator = "imitator";
-        String PathPolyop = "polyop";*/
-        String PathImitator = "/home/shapagat/Downloads/imitator-3.2.0/bin/imitator";
-        String PathPolyop = "/home/shapagat/Downloads/polyop";
 
 
         File editedTA = createEditedTA(inputTA);
@@ -56,10 +52,10 @@ public class controlling {
         File pubReachProp = createReachFile(editedTA, false);
 
 
-        LinkedHashMap<File, File> privImitatorResults = getImitatorResultsForModels(subsetTAs, privReachProp, PathImitator, "privReach_");
-        LinkedHashMap<File, File> pubImitatorResults = getImitatorResultsForModels(subsetTAs, pubReachProp, PathImitator, "pubReach_");
+        LinkedHashMap<File, File> privImitatorResults = getImitatorResultsForModels(subsetTAs, privReachProp, "privReach_");
+        LinkedHashMap<File, File> pubImitatorResults = getImitatorResultsForModels(subsetTAs, pubReachProp, "pubReach_");
 
-        LinkedHashMap<File, File> PolyopResults = getPolyopResultsForModels(privImitatorResults, pubImitatorResults, PathPolyop, include_unreach);
+        LinkedHashMap<File, File> PolyopResults = getPolyopResultsForModels(privImitatorResults, pubImitatorResults, include_unreach);
         Set<Set<String>> subsetsToAllow = getOpaqueSubsets(inputTA, PolyopResults);
         System.out.println("Following subsets of actions make the system fully opaque:");
         for (Set<String> subset : subsetsToAllow) {
@@ -171,7 +167,7 @@ public class controlling {
         return result;
     }
 
-    private static LinkedHashMap<File, File> getPolyopResultsForModels(LinkedHashMap<File, File> privImitatorResults, LinkedHashMap<File, File> pubImitatorResults, String PathPolyop, boolean include_unreach) {
+    private static LinkedHashMap<File, File> getPolyopResultsForModels(LinkedHashMap<File, File> privImitatorResults, LinkedHashMap<File, File> pubImitatorResults, boolean include_unreach) {
         LinkedHashMap<File, File> output = new LinkedHashMap<>();
         for (Map.Entry<File, File> entry : privImitatorResults.entrySet()) {
             File privKey = entry.getKey();
@@ -190,7 +186,7 @@ public class controlling {
             /* String content = "equal (" + pubConstraint + "," + privConstraint + ")";*/
             writeToFile(content, polyOpPath, false);
 
-            runTerminal(PathPolyop + " " + polyOpPath);
+            runTerminal(Params.PathPolyop + " " + polyOpPath);
             String resPath = polyOpPath.getPath() + ".res";
             if(include_unreach){
                 File result = new File(resPath);
@@ -507,14 +503,14 @@ public class controlling {
         return output.toString();
     }
 
-    public static LinkedHashMap<File, File> getImitatorResultsForModels(ArrayList<File> subsetFiles, File propertyFile, String PathImitator, String ouputPrefix) {
+    public static LinkedHashMap<File, File> getImitatorResultsForModels(ArrayList<File> subsetFiles, File propertyFile, String ouputPrefix) {
         LinkedHashMap<File, File> output = new LinkedHashMap<>();
         String propertyPath = propertyFile.getPath();
         for (File model : subsetFiles) {
             String fileName = getNameWithoutExtension(model.getName());
 
-            //System.out.println(PathImitator+ " "+val + " " + privPath + " -output-prefix privReach_"+key);
-            runTerminal(PathImitator + " " + model.getPath() + " " + propertyPath + " -output-prefix " + ouputPrefix + fileName);
+            //System.out.println(Params.PathImitator+ " "+val + " " + privPath + " -output-prefix privReach_"+key);
+            runTerminal(Params.PathImitator + " " + model.getPath() + " " + propertyPath + " -output-prefix " + ouputPrefix + fileName);
             String cwd = Path.of("").toAbsolutePath().toString();
             String resPath = cwd + "/" + ouputPrefix + fileName + ".res";
             File result = new File(resPath);
