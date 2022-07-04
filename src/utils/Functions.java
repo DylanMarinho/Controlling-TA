@@ -126,7 +126,7 @@ public class Functions {
      */
     private static void runTerminal(String command) {
         try {
-            Runtime.getRuntime().exec(command);
+            Runtime.getRuntime().exec(command); //TODO: exec is deprecated
         } catch (IOException ex) {
             ex.printStackTrace();
         }
