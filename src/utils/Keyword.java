@@ -79,13 +79,13 @@ public enum Keyword {
             return "goto";
         }
     },
-    LOC_FINAL{
+    DEFAULT_LOC_FINAL{ //Default value for loc_final
         @Override
         public String toString() {
             return "qf";
         }
     },
-    LOC_PRIV{
+    DEFAULT_LOC_PRIV{ //Default value for loc_priv
         @Override
         public String toString() {
             return "qpriv";

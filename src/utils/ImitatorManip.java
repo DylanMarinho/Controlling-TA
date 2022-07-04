@@ -27,9 +27,9 @@ public class ImitatorManip {
     }
 
     //TODO: Description
-    private static void editEdges(File outputFile, String line) {
-        String goto_qf_keyword = "goto qf;";
-        String goto_qpriv_keyword = "goto qpriv;";
+    private static void editEdges(File outputFile, String line, String loc_final, String loc_priv) {
+        String goto_qf_keyword = "goto "+ loc_final +";";
+        String goto_qpriv_keyword = "goto "+ loc_priv +";";
         try {
             if (line.contains(goto_qf_keyword)) {
                 String[] goto_line = line.split(" ");
@@ -132,7 +132,7 @@ public class ImitatorManip {
      * @param inputFile input imi file
      * @return variable to the edited file
      */
-    public static File createEditedTA(File inputFile) {
+    public static File createEditedTA(File inputFile, String loc_final, String loc_priv) {
         String outputName = Params.nameOfEditedTA(inputFile);
         File outputFile = FilesManip.createFileNamed(outputName);
 
@@ -143,8 +143,8 @@ public class ImitatorManip {
                 String line = scanner.nextLine();
                 if (line.contains(Keyword.CLOCK.toString())) {
                     editVariables(outputFile);
-                } else if (line.contains(String.format("%s %s;", Keyword.GOTO, Keyword.LOC_FINAL)) || line.contains(String.format("%s %s;", Keyword.GOTO, Keyword.LOC_PRIV))) {
-                    editEdges(outputFile, line);
+                } else if (line.contains(String.format("%s %s;", Keyword.GOTO, loc_final)) || line.contains(String.format("%s %s;", Keyword.GOTO, loc_priv))) {
+                    editEdges(outputFile, line, loc_final, loc_priv);
                 } else if (line.contains(init_keyword)) {
                     editDisablerAutomaton(outputFile);
                 } else if (line.contains(Keyword.DISCRETE.toString()) || line.contains(Keyword.CONTINUOUS.toString())) {

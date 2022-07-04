@@ -3,11 +3,7 @@
  * Modifications by: Dylan Marinho
  ****************/
 
-import utils.FilesManip;
-import utils.Functions;
-import utils.ImitatorManip;
-import utils.Params;
-import utils.CommandLineParser;
+import utils.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -22,8 +18,6 @@ import java.util.regex.Pattern;
     • File should not have comments containing following keyword: clock,
         parameter, bool, continuous, discrete, automaton, sync, do, t_abs, p_abs, visited_qpriv, goto, qf, qpriv.
     • The absolute path of current directory should not contain a space.
-    • The private location should be named qpriv.
-    • The final location should be named qf
 */
 
 
@@ -40,9 +34,10 @@ public class controlling {
         // HELP
         if(clp.getFlag("h")) {
             System.out.println("Options:");
-            System.out.println(" * -file\t Path to the imi file [REQUIRED]");
+            System.out.println(" * -file [path]\t\t Path to the imi file [REQUIRED]");
             System.out.println(" * -exclude-unreach\t Exclude unreachable in opacity (otherwise, include them)");
-
+            System.out.println(" * -lf [name]\t\t Name of the final location (default: "+ Keyword.DEFAULT_LOC_FINAL.toString() +")");
+            System.out.println(" * -lpriv [name]\t Name of the private location (default: "+ Keyword.DEFAULT_LOC_PRIV.toString() +")");
             return;
         }
 
@@ -57,12 +52,18 @@ public class controlling {
         include_unreach = !(clp.getFlag("exclude-unreach"));
         System.out.println(" * [OPTION] Unreachable are included: " + include_unreach);
 
+        //Loc priv, loc final
+        String loc_priv = clp.getArgumentValue("lpriv");
+        if(loc_priv==null) {loc_priv = Keyword.DEFAULT_LOC_PRIV.toString();}
+        String loc_final = clp.getArgumentValue("lf");
+        if(loc_final==null) {loc_final = Keyword.DEFAULT_LOC_FINAL.toString();}
+
         /*WORK*/
         // Open file
         File inputTA = new File(file_name);
 
         // Edit file (add variables, ...)
-        File editedTA = ImitatorManip.createEditedTA(inputTA);
+        File editedTA = ImitatorManip.createEditedTA(inputTA, loc_final, loc_priv);
 
         // Create the subset of TAs (TAs where some actiosn are disabled)
         ArrayList<File> subsetTAs = Functions.createSubsetTAs(editedTA);
