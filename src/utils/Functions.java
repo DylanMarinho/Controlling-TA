@@ -77,9 +77,8 @@ public class Functions {
         return outputFile;
     }
 
-    public static ArrayList<File> createSubsetTAs(File editedFile) {
+    public static ArrayList<File> createSubsetTAs(File editedFile, Set<String> actions) {
         ArrayList<File> subsetFiles = new ArrayList<>();
-        Set<String> actions = ImitatorManip.getActions(editedFile);
         Set<Set<String>> subsets = getSubsetsOfActions(actions);
 
         for (Set<String> subset : subsets) {
