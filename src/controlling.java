@@ -7,6 +7,7 @@ import utils.FilesManip;
 import utils.Functions;
 import utils.ImitatorManip;
 import utils.Params;
+import utils.CommandLineParser;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -33,17 +34,30 @@ public class controlling {
 
     public static void main(String[] args) {
 
-        // Check program options
-        if (args.length == 1) { // case where only one argument is set: use default value for unreach
-            file_name = args[0];
-            include_unreach = Params.default_unreach_option;
-        } else if (args.length == 2 && ((args[1].equals("include-unreach") || args[1].equals("exclude-unreach")))) {
-            file_name = args[0];
-            include_unreach = args[1].equals("include-unreach");
-        } else {
-            throw new Error("Two program arguments are needed! Syntax: controlling [input_file.imi] ?[include-unreach | exclude-unreach]");
+        /*OPTIONS*/
+        CommandLineParser clp = new CommandLineParser(args);
+
+        // HELP
+        if(clp.getFlag("h")) {
+            System.out.println("Options:");
+            System.out.println(" * -file\t Path to the imi file [REQUIRED]");
+            System.out.println(" * -exclude-unreach\t Exclude unreachable in opacity (otherwise, include them)");
+
+            return;
         }
 
+        // -file option is the .IMI file path
+        file_name = clp.getArgumentValue("file");
+        if(file_name == null) {
+            System.out.println("ERROR: file name is not specified");
+            return;
+        }
+
+        // if the flag -exclude-unreach is set, exclude. Otherwise, include
+        include_unreach = !(clp.getFlag("exclude-unreach"));
+        System.out.println(" * [OPTION] Unreachable are included: " + include_unreach);
+
+        /*WORK*/
         // Open file
         File inputTA = new File(file_name);
 

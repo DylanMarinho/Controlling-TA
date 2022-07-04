@@ -8,9 +8,8 @@ import java.util.regex.Pattern;
 
 public class PolyopManip {
     public static File createPolyopFile(File modelFile) {
-
-        String cwd = Path.of("").toAbsolutePath().toString();
-        return FilesManip.createFileNamed(cwd + "/equality_" + FilesManip.getNameWithoutExtension(modelFile.getName()) + ".polyop");
+        String polyop_file = Params.nameOfPolyopFile(modelFile);
+        return FilesManip.createFileNamed(polyop_file);
     }
 
     public static String getConstraint(String path) {

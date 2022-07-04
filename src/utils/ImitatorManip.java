@@ -62,7 +62,7 @@ public class ImitatorManip {
                     Pattern r = Pattern.compile(pattern);
                     Matcher m = r.matcher(line);
                     if (m.find()) {
-                        System.out.println(m.group(1));
+                        //System.out.println(m.group(1));
 
                         String[] goto_line = line.split(" ");
                         StringBuilder ouput_goto_line = new StringBuilder();

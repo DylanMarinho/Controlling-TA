@@ -1,6 +1,7 @@
 package utils;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.StringJoiner;
 
 public class Params {
@@ -9,7 +10,7 @@ public class Params {
     // Polyop and IMITATOR are supposed to be known in the PATH
     // If not, it is possible to update the path here:
     static public String PathImitator = "imitator";
-    static public String PathPolyop = "polyop";
+    static public String PathPolyop = "PolyOp32";
 
     // Directory to store all outputs
     static public String pathToOutput = "output";
@@ -33,5 +34,15 @@ public class Params {
     static public String nameOfSubTA(File inputFile, StringJoiner joiner) {
         String fileNameWithoutExtension = FilesManip.getNameWithoutExtension(inputFile.getName());
         return String.format("%s_%s.imi", fileNameWithoutExtension, joiner);
+    }
+
+    static public String nameOfResImitatorFile(String modelName, String outputPrefix) {
+        /*WARNING: name without .res to be used in IMITATOR -output-prefix /!\ */
+        String fileName = FilesManip.getNameWithoutExtension(modelName);
+        return outputPrefix + fileName;
+    }
+
+    static public String nameOfPolyopFile(File modelFile) {
+        return "/equality_" + FilesManip.getNameWithoutExtension(modelFile.getName()) + ".polyop";
     }
 }

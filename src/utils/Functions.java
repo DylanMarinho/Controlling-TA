@@ -2,15 +2,16 @@ package utils;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.*;
 
 public class Functions {
 
-    /** From a set of actions, return all subsets
+    /**
+     * From a set of actions, return all subsets
+     *
      * @param actions Set of actions
      * @return Set of all possible combinations of actions
-    * */
+     */
     private static Set<Set<String>> getSubsetsOfActions(Set<String> actions) {
         Set<Set<String>> subsets = new LinkedHashSet<>();
 
@@ -51,7 +52,7 @@ public class Functions {
 
 
                 if (disabler_found) {
-                    if (line.contains(Keyword.SYNCLABS+":")) {
+                    if (line.contains(Keyword.SYNCLABS + ":")) {
                         FilesManip.addLine(outputFile, String.format("%s: %s;", Keyword.SYNCLABS, output_line));
 
                     } else {
@@ -118,8 +119,11 @@ public class Functions {
         return actionsToAllow;
     }
 
-    /** Run a command in terminal
-     * @param command Commadn to run*/
+    /**
+     * Run a command in terminal
+     *
+     * @param command Commadn to run
+     */
     private static void runTerminal(String command) {
         try {
             Runtime.getRuntime().exec(command);
@@ -128,19 +132,21 @@ public class Functions {
         }
     }
 
-    public static LinkedHashMap<File, File> getImitatorResultsForModels(ArrayList<File> subsetFiles, File propertyFile, String ouputPrefix) {
+    public static LinkedHashMap<File, File> getImitatorResultsForModels(ArrayList<File> subsetFiles, File propertyFile, String outputPrefix) {
         LinkedHashMap<File, File> output = new LinkedHashMap<>();
         String propertyPath = propertyFile.getPath();
         for (File model : subsetFiles) {
-            String fileName = FilesManip.getNameWithoutExtension(model.getName());
+            String res_name_without_extension = Params.nameOfResImitatorFile(model.getName(), outputPrefix);
 
-            //System.out.println(Params.PathImitator+ " "+val + " " + privPath + " -output-prefix privReach_"+key);
-            runTerminal(Params.PathImitator + " " + model.getPath() + " " + propertyPath + " -output-prefix " + ouputPrefix + fileName);
-            String cwd = Path.of("").toAbsolutePath().toString();
-            String resPath = cwd + "/" + ouputPrefix + fileName + ".res";
-            File result = new File(resPath);
+            //Run
+            String cmd = Params.PathImitator + " " + model.getPath() + " " + propertyPath + " -output-prefix " + Params.pathToOutput + "/" + res_name_without_extension;
+            System.out.println("* [RUN] " + cmd);
+            runTerminal(cmd);
+
+            String res_name_with_extension = res_name_without_extension + ".res";
+
+            File result = new File(Params.pathToOutput + "/" + res_name_with_extension);
             output.put(model, result);
-
         }
         return output;
     }
