@@ -123,9 +123,10 @@ public class Functions {
      *
      * @param command Commadn to run
      */
-    private static void runTerminal(String command) {
+    private static void runTerminal(String[] command) {
         try {
-            Runtime.getRuntime().exec(command); //TODO: exec is deprecated
+            System.out.println("* [RUN] " + String.join(" ", command));
+            Runtime.getRuntime().exec(command);
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -138,8 +139,7 @@ public class Functions {
             String res_name_without_extension = Params.nameOfResImitatorFile(model.getName(), outputPrefix);
 
             //Run
-            String cmd = Params.PathImitator + " " + model.getPath() + " " + propertyPath + " -output-prefix " + Params.pathToOutput + "/" + res_name_without_extension;
-            System.out.println("* [RUN] " + cmd);
+            String[] cmd = {Params.PathImitator, model.getPath(), propertyPath, "-output-prefix", Params.pathToOutput + "/" + res_name_without_extension};
             runTerminal(cmd);
 
             String res_name_with_extension = res_name_without_extension + ".res";
@@ -169,7 +169,7 @@ public class Functions {
             /* String content = "equal (" + pubConstraint + "," + privConstraint + ")";*/
             FilesManip.writeToFile(content, polyOpPath, false);
 
-            runTerminal(Params.PathPolyop + " " + polyOpPath);
+            runTerminal(new String[]{Params.PathPolyop, polyOpPath.getPath()});
             String resPath = polyOpPath.getPath() + ".res";
             if (include_unreach) {
                 File result = new File(resPath);
