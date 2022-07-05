@@ -121,7 +121,7 @@ public class Functions {
     /**
      * Run a command in terminal
      *
-     * @param command Commadn to run
+     * @param command Command to run
      */
     private static void runTerminal(String[] command) {
         try {
