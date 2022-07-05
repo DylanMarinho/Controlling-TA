@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
     • File should contain a single automaton.
     • File should not have comments containing following keyword: clock,
         parameter, bool, continuous, discrete, automaton, sync, do, t_abs, p_abs, visited_qpriv, goto, qf, qpriv.
-    • The absolute path of current directory should not contain a space.
+    • The absolute path of current directory should not contain a space -> Maybe fixed with exec(String[])
 */
 
 
