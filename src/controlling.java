@@ -84,8 +84,8 @@ public class controlling {
         ArrayList<File> subsetTAs = Functions.createSubsetTAs(editedTA, actionSet);
 
         // Create reachability property files
-        File privReachProp = ImitatorManip.createReachFile(editedTA, true);
-        File pubReachProp = ImitatorManip.createReachFile(editedTA, false);
+        File privReachProp = ImitatorManip.createReachFile(editedTA, true, loc_final, loc_priv);
+        File pubReachProp = ImitatorManip.createReachFile(editedTA, false, loc_final, loc_priv);
 
         // Run reachability on each sub-TA
         LinkedHashMap<File, File> privImitatorResults = Functions.getImitatorResultsForModels(subsetTAs, privReachProp, "privReach_");

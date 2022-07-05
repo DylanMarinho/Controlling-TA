@@ -28,8 +28,8 @@ public class ImitatorManip {
 
     //TODO: Description
     private static void editEdges(File outputFile, String line, String loc_final, String loc_priv) {
-        String goto_qf_keyword = "goto "+ loc_final +";";
-        String goto_qpriv_keyword = "goto "+ loc_priv +";";
+        String goto_qf_keyword = "goto " + loc_final + ";";
+        String goto_qpriv_keyword = "goto " + loc_priv + ";";
         try {
             if (line.contains(goto_qf_keyword)) {
                 String[] goto_line = line.split(" ");
@@ -256,11 +256,16 @@ public class ImitatorManip {
         return automatonName;
     }
 
-    /** Create a property file for reachability
+    /**
+     * Create a property file for reachability
+     *
      * @param inputFile File with the PTA to check
      * @param isPrivate Has reachability to be performed for public or private runs?
-     * @return File object*/
-    public static File createReachFile(File inputFile, boolean isPrivate) {
+     * @param loc_final Name of the final location
+     * @param loc_priv  Name of the private lcoation
+     * @return File object
+     */
+    public static File createReachFile(File inputFile, boolean isPrivate, String loc_final, String loc_priv) {
         String automatonName = ImitatorManip.getName(inputFile);
         String fileName;
         if (isPrivate) {
@@ -272,10 +277,10 @@ public class ImitatorManip {
         try {
             String output;
             if (isPrivate) {
-                output = String.format("property := #synth EF(loc[%s] = qf & visited_qpriv = True);", automatonName);
+                output = String.format("property := #synth EF(loc[%s] = " + loc_final + " & visited_qpriv = True);", automatonName);
 
             } else {
-                output = String.format("property := #synth EF(loc[%s] = qf & visited_qpriv = False);", automatonName);
+                output = String.format("property := #synth EF(loc[%s] = " + loc_priv + " & visited_qpriv = False);", automatonName);
             }
 
             FileWriter fileWriter = new FileWriter(myObj);
