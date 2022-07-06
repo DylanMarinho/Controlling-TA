@@ -6,89 +6,94 @@ public enum Keyword {
         public String toString() {
             return "clock";
         }
-    },
-    PARAMETER {
+    }, PARAMETER {
         @Override
         public String toString() {
             return "parameter";
         }
-    },
-    BOOL {
+    }, BOOL {
         @Override
         public String toString() {
             return "bool";
         }
-    },
-    SYNCLABS {
+    }, SYNCLABS {
         @Override
         public String toString() {
             return "synclabs";
         }
-    },
-    CONTINUOUS {
+    }, CONTINUOUS {
         @Override
         public String toString() {
             return "continuous";
         }
-    },
-    DISCRETE {
+    }, DISCRETE {
         @Override
         public String toString() {
             return "discrete";
         }
-    },
-    AUTOMATON {
+    }, AUTOMATON {
         @Override
         public String toString() {
             return "automaton";
         }
-    },
-    SYNC {
+    }, SYNC {
         @Override
         public String toString() {
             return "sync";
         }
-    },
-    DO {
+    }, DO {
         @Override
         public String toString() {
             return "do";
         }
-    },
-    T_ABS {
+    }, T_ABS {
         @Override
         public String toString() {
             return "t_abs";
         }
-    },
-    P_ABS {
+    }, P_ABS {
         @Override
         public String toString() {
             return "p_abs";
         }
-    },
-    VISITED_PRIV {
+    }, VISITED_PRIV {
         @Override
         public String toString() {
             return "visited_qpriv";
         }
-    },
-    GOTO{
+    }, GOTO {
         @Override
         public String toString() {
             return "goto";
         }
-    },
-    DEFAULT_LOC_FINAL{ //Default value for loc_final
+    }, DEFAULT_LOC_FINAL { //Default value for loc_final
+
         @Override
         public String toString() {
             return "qf";
         }
-    },
-    DEFAULT_LOC_PRIV{ //Default value for loc_priv
+    }, DEFAULT_LOC_PRIV { //Default value for loc_priv
+
         @Override
         public String toString() {
             return "qpriv";
+        }
+    }, BEGIN_COMMENT {
+        @Override
+        public String toString() {
+            return "\\(\\*";
+        }
+    }, END_COMMENT {
+        @Override
+        public String toString() {
+            return "\\*\\)";
+        }
+    },
+
+    INIT {
+        @Override
+        public String toString() {
+            return "init := {";
         }
     }
 }

@@ -93,11 +93,10 @@ public class ImitatorManip {
 
     //TODO: Description
     private static void editDisablerAutomaton(File outputFile) {
-        String init_keyword = "init := {";
         String output_line = "(************************************************************)\n" + "  automaton disabler\n" + "(*** NOTE: the purpose of this automaton is to \"disable\" some actions by just declaring them as \"synclabs\" and subsequently NOT using them ***)\n" + "(************************************************************)\n" + "\n" + "(*** TAG begin synclabs ***)\n" + "synclabs: ;\n" + "(*** TAG end synclabs ***)\n" + "\n" + "loc dummy: invariant True\n" + "\n" + "\n" + "end (* disabled *)";
         try {
             FilesManip.addLine(outputFile, output_line);
-            FilesManip.addLine(outputFile, init_keyword);
+            FilesManip.addLine(outputFile, Keyword.INIT.toString());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -124,6 +123,44 @@ public class ImitatorManip {
         }
     }
 
+    /**
+     * Return non comment part of a line
+     *
+     * @param line           Line to split
+     * @param isCommentLines True if a multi-line comment is reading
+     * @return non-comment part of line
+     */
+    private static Pair<String, Boolean> lineWithoutComment(String line, boolean isCommentLines) {
+        String lineToReturn;
+        String begin = Keyword.BEGIN_COMMENT.toString();
+        if (isCommentLines) { // If we are reading a multiline comment
+            if (line.contains(Keyword.END_COMMENT.toString().replace("\\", ""))) { // If we found the end of the comment
+                String[] parts = line.split(Keyword.END_COMMENT.toString());
+                isCommentLines = false;
+                if (parts.length < 2) {
+                    lineToReturn = "";
+                } else {
+                    lineToReturn = parts[1];
+                }
+            } else { // Otherwise, we are still reading a comment
+                lineToReturn = "";
+            }
+        } else { // If we are not reading a multiline comment
+            if (line.contains(Keyword.BEGIN_COMMENT.toString().replace("\\", ""))) { // If the line begin a comment
+                //if (line.contains("\(\*")) { // If the line begin a comment
+                String[] parts = line.split(Keyword.BEGIN_COMMENT.toString());
+                String uncomment_part = parts[0];
+                if (!(parts[1].contains(Keyword.END_COMMENT.toString().replace("\\", "")))) { //If comment is not end at the line
+                    isCommentLines = true;
+                }
+                lineToReturn = uncomment_part;
+            } else { // There is no comment
+                lineToReturn = line;
+            }
+        }
+        return new Pair<String, Boolean>(lineToReturn, isCommentLines);
+    }
+
     //TODO: explicit what is a "edited TA"
 
     /**
@@ -138,18 +175,22 @@ public class ImitatorManip {
 
         try {
             Scanner scanner = new Scanner(inputFile);
-            String init_keyword = "init := {"; //TODO: Move to KEYWORD
+            boolean isCommentLines = false;
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
+                Pair<String, Boolean> pair = lineWithoutComment(line, isCommentLines);
+                line = pair.getKey();
+                isCommentLines = pair.getValue();
+
                 if (line.contains(Keyword.CLOCK.toString())) {
                     editVariables(outputFile);
                 } else if (line.contains(String.format("%s %s;", Keyword.GOTO, loc_final)) || line.contains(String.format("%s %s;", Keyword.GOTO, loc_priv))) {
                     editEdges(outputFile, line, loc_final, loc_priv);
-                } else if (line.contains(init_keyword)) {
+                } else if (line.contains(Keyword.INIT.toString())) {
                     editDisablerAutomaton(outputFile);
                 } else if (line.contains(Keyword.DISCRETE.toString()) || line.contains(Keyword.CONTINUOUS.toString())) {
                     editInit(outputFile, line);
-                } else {
+                } else if (!line.equals("")) {
                     FilesManip.addLine(outputFile, line);
                 }
             }
