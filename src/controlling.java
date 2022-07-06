@@ -14,7 +14,6 @@ import java.util.*;
 /*
     ASSUMPTIONS:
     • File should contain a single automaton.
-    • The absolute path of current directory should not contain a space -> Maybe fixed with exec(String[])
 */
 
 
