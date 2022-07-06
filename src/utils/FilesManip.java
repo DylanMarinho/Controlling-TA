@@ -34,9 +34,9 @@ public class FilesManip {
         File myObj = new File(Params.pathToOutput, fileName);
         try {
             if (myObj.createNewFile()) {
-                System.out.println("File created: " + myObj.getName());
+                System.out.println("* [FILE] File created: " + myObj.getName());
             } else {
-                System.out.println("File already exists:" + myObj.getName());
+                System.out.println("* [FILE] File already exists:" + myObj.getName());
                 String path = myObj.getPath().toString();
                 PrintWriter pw = new PrintWriter(path);//erases the content if file already exists
                 pw.close();

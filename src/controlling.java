@@ -97,6 +97,7 @@ public class controlling {
         Set<Set<String>> subsetsToAllow = Functions.getOpaqueSubsets(inputTA, PolyopResults);
 
         // Print answer
+        System.out.println("----------------------------------------------------------");
         System.out.println("Following subsets of actions make the system fully opaque:");
         for (Set<String> subset : subsetsToAllow) {
 
