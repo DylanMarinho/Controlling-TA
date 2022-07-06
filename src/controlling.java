@@ -95,16 +95,11 @@ public class controlling {
         LinkedHashMap<File, File> PolyopResults = Functions.getPolyopResultsForModels(privImitatorResults, pubImitatorResults, include_unreach);
         Set<Set<String>> subsetsToAllow = Functions.getOpaqueSubsets(inputTA, PolyopResults);
 
+        // Write answer
+        File outputFile = Functions.writeActionSubset(inputTA, subsetsToAllow);
+
         // Print answer
         System.out.println("----------------------------------------------------------");
-        System.out.println("Following subsets of actions make the system fully opaque:");
-        for (Set<String> subset : subsetsToAllow) {
-
-            StringJoiner joiner = new StringJoiner(", ");
-            for (String action : subset) {
-                joiner.add(action);
-            }
-            System.out.printf("{%s}%n", joiner);
-        }
+        System.out.println("Subsets of actions make the system fully opaque are written in " + outputFile.getPath());
     }
 }

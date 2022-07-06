@@ -185,4 +185,18 @@ public class Functions {
         }
         return output;
     }
+
+    public static File writeActionSubset(File modelFile, Set<Set<String>> subsetsToAllow) {
+        String outputFileName = Params.nameOfActionSubsetOutput(modelFile);
+        File outputFile = FilesManip.createFileNamed(outputFileName);
+        for (Set<String> subset : subsetsToAllow) {
+
+            StringJoiner joiner = new StringJoiner(", ");
+            for (String action : subset) {
+                joiner.add(action);
+            }
+            FilesManip.addLine(outputFile, "{"+joiner+"}");
+        }
+            return outputFile;
+    }
 }

@@ -45,4 +45,8 @@ public class Params {
     static public String nameOfPolyopFile(File modelFile) {
         return "/equality_" + FilesManip.getNameWithoutExtension(modelFile.getName()) + ".polyop";
     }
+
+    static public String nameOfActionSubsetOutput(File modelFile) {
+        return "actions_" + FilesManip.getNameWithoutExtension(modelFile.getName()) + ".txt";
+    }
 }
