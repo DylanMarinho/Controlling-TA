@@ -339,7 +339,7 @@ public class ImitatorManip {
                 output = String.format("property := #synth EF(loc[%s] = " + loc_final + " & visited_qpriv = True);", automatonName);
 
             } else {
-                output = String.format("property := #synth EF(loc[%s] = " + loc_priv + " & visited_qpriv = False);", automatonName);
+                output = String.format("property := #synth EF(loc[%s] = " + loc_final + " & visited_qpriv = False);", automatonName);
             }
 
             FileWriter fileWriter = new FileWriter(myObj);
