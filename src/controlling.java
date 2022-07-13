@@ -50,7 +50,8 @@ public class controlling {
         }
 
         // if the flag -exclude-unreach is set, exclude. Otherwise, include
-        include_unreach = !(clp.getFlag("exclude-unreach"));
+        include_unreach = !(clp.getFlag("excludeunreach"));
+        //NOTE: there is no - between words in getFlag! (cf. getFlag() with replace("-","")
         System.out.println(" * [OPTION] Unreachable are included: " + include_unreach);
 
         //Loc priv, loc final
@@ -100,6 +101,6 @@ public class controlling {
 
         // Print answer
         System.out.println("----------------------------------------------------------");
-        System.out.println("Subsets of actions make the system fully opaque are written in " + outputFile.getPath());
+        System.out.println("Subsets of actions to keep that make the system fully opaque are written in " + outputFile.getPath());
     }
 }

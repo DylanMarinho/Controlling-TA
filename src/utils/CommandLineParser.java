@@ -1,6 +1,6 @@
 package utils;
 
-/*FROM https://oshanoshu.github.io/2021-02-23-Simple-Java-Command-Line-Argument-Parser-Implementation/*/
+// FROM https://oshanoshu.github.io/2021-02-23-Simple-Java-Command-Line-Argument-Parser-Implementation/
 
 import java.util.HashMap;
 import java.util.HashSet;
