@@ -5,12 +5,13 @@ import java.nio.file.Path;
 import java.util.StringJoiner;
 
 public class Params {
-    static public boolean default_unreach_option = false;
-
     // Polyop and IMITATOR are supposed to be known in the PATH
     // If not, it is possible to update the path here:
     static public String PathImitator = "imitator";
     static public String PathPolyop = "PolyOp32";
+
+    // Default mode
+    static public String DEFAULT_MODE = "all";
 
     // Directory to store all outputs
     static public String pathToOutput = "output";

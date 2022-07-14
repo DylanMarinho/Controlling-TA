@@ -153,17 +153,16 @@ public class ImitatorManip {
 
                 if (!(parts[1].contains(Keyword.END_COMMENT.toString().replace("\\", "")))) { //If comment is not end at the line
                     isCommentLines = true;
-                }
-                else { //If comment end at the line, add what follows END_COMMENT
+                } else { //If comment end at the line, add what follows END_COMMENT
                     String[] new_part = parts[1].split(Keyword.END_COMMENT.toString());
                     try {
                         uncomment_part = uncomment_part + " " + new_part[1];
-                    } catch(Exception IndexOutOfBoundsException){
+                    } catch (Exception IndexOutOfBoundsException) {
                         ;
                     }
                 }
 
-                if(parts.length>2) { //If there is more than one comment in the line, display a warning
+                if (parts.length > 2) { //If there is more than one comment in the line, display a warning
                     // TODO: Fix the warning (for all item in part, parse END_COMMENT, etc.)
                     System.out.println("% ------- ------- ------- %");
                     System.out.println(" [WARNING] There is more than one BEGIN_COMMENT in the line:");

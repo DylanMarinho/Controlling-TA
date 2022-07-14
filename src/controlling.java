@@ -3,13 +3,13 @@
  * Modifications by: Dylan Marinho
  ****************/
 
-import utils.CommandLineParser;
-import utils.Functions;
-import utils.ImitatorManip;
-import utils.Keyword;
+import utils.*;
 
 import java.io.File;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /*
     ASSUMPTIONS:
@@ -39,6 +39,7 @@ public class controlling {
             System.out.println(" * -exclude-unreach\t Exclude unreachable in opacity (otherwise, include them)");
             System.out.println(" * -lf [name]\t\t Name of the final location (default: " + Keyword.DEFAULT_LOC_FINAL.toString() + ")");
             System.out.println(" * -lpriv [name]\t Name of the private location (default: " + Keyword.DEFAULT_LOC_PRIV.toString() + ")");
+            System.out.println(" * -mode [mode]\t\t Set when to stop the search ('first', 'size', 'all') (default: " + Params.DEFAULT_MODE + ")");
             return;
         }
 
@@ -64,6 +65,18 @@ public class controlling {
             loc_final = Keyword.DEFAULT_LOC_FINAL.toString();
         }
 
+        String mode = clp.getArgumentValue("mode");
+        if (mode == null) {
+            mode = Params.DEFAULT_MODE;
+        } else {
+            Set<String> allowedModeValues = new HashSet<>(List.of(new String[]{"first", "size", "all"}));
+            if (!allowedModeValues.contains(mode)) {
+                System.out.println("ERROR: mode value '" + mode + "' is not allowed");
+                return;
+            }
+        }
+        System.out.println(" * [OPTION] Mode: " + mode);
+
         //Actions
         String actions = clp.getArgumentValue("actions");
         boolean actionFlag = !(actions == null); //True is action are specified in a parameter
@@ -82,19 +95,15 @@ public class controlling {
         } else {
             actionSet = ImitatorManip.getActions(editedTA);
         }
-        ArrayList<File> subsetTAs = Functions.createSubsetTAs(editedTA, actionSet);
 
         // Create reachability property files
         File privReachProp = ImitatorManip.createReachFile(editedTA, true, loc_final, loc_priv);
         File pubReachProp = ImitatorManip.createReachFile(editedTA, false, loc_final, loc_priv);
 
-        // Run reachability on each sub-TA
-        LinkedHashMap<File, File> privImitatorResults = Functions.getImitatorResultsForModels(subsetTAs, privReachProp, "privReach_");
-        LinkedHashMap<File, File> pubImitatorResults = Functions.getImitatorResultsForModels(subsetTAs, pubReachProp, "pubReach_");
-
-        // Run polyop and check opacity
-        LinkedHashMap<File, File> PolyopResults = Functions.getPolyopResultsForModels(privImitatorResults, pubImitatorResults, include_unreach);
-        Set<Set<String>> subsetsToAllow = Functions.getOpaqueSubsets(inputTA, PolyopResults);
+        // Deal the search
+        Set<Set<String>> subsetsToDisable = Functions.searchSubsets(actionSet, editedTA, mode, include_unreach, privReachProp, pubReachProp);
+        Set<Set<String>> subsetsToAllow = Functions.getSubsetsToAllow(editedTA, subsetsToDisable);
+        System.out.println(subsetsToAllow);
 
         // Write answer
         File outputFile = Functions.writeActionSubset(inputTA, subsetsToAllow);
