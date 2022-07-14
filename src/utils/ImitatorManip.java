@@ -67,12 +67,16 @@ public class ImitatorManip {
                         String[] goto_line = line.split(" ");
                         StringBuilder ouput_goto_line = new StringBuilder();
                         boolean do_found = false;
+                        boolean do_end = false;
                         for (String s : goto_line) {
 
                             if (s.equals(Keyword.DO.toString())) {
                                 do_found = true;
-                                ouput_goto_line.append((String.format("%s {%s, %s := True} %s", Keyword.DO, m.group(1), Keyword.VISITED_PRIV, goto_qpriv_keyword)));
-                            } else if (!do_found) {
+                                ouput_goto_line.append((String.format("%s {%s, %s := True}", Keyword.DO, m.group(1), Keyword.VISITED_PRIV)));
+                            } else if (do_found && !do_end && s.contains("}")) {
+                                do_end = true;
+                            }
+                            else if (!do_found || do_end) {
                                 ouput_goto_line.append(s).append(" ");
                             }
 
