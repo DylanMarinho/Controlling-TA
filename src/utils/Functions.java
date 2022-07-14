@@ -165,9 +165,12 @@ public class Functions {
     private static void runTerminal(String[] command) {
         try {
             System.out.println("* [RUN] " + String.join(" ", command));
-            Runtime.getRuntime().exec(command);
+            Process p = Runtime.getRuntime().exec(command);
+            p.waitFor();
         } catch (IOException ex) {
             ex.printStackTrace();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
     }
 
