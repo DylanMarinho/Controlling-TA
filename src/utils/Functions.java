@@ -26,12 +26,6 @@ public class Functions {
         return subsets;
     }
 
-    private static Set<Set<String>> getSubsetsOfActionsNEW(Set<String> actions) {
-        Set<Set<String>> subsets = new LinkedHashSet<>();
-
-        return subsets;
-    }
-
     private static File createSubsetTA(File inputFile, Set<String> subset) {
         StringJoiner joiner = new StringJoiner("_");
         StringJoiner output_line = new StringJoiner(",");
