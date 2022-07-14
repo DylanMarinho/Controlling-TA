@@ -6,6 +6,7 @@ import java.util.*;
 
 public class Functions {
 
+
     /**
      * From a set of actions, return all subsets
      *
@@ -13,22 +14,21 @@ public class Functions {
      * @return Set of all possible combinations of actions
      */
     private static Set<Set<String>> getSubsetsOfActions(Set<String> actions) {
+        SetOfActions set = new SetOfActions(actions);
+        Set<String> currentSubset;
+        Set<Set<String>> subsets = new LinkedHashSet<>();
+        //add empty set
+        subsets.add(set.getSet());
+        while(set.increment()) {
+            currentSubset = set.getSet();
+            subsets.add(currentSubset);
+        }
+        return subsets;
+    }
+
+    private static Set<Set<String>> getSubsetsOfActionsNEW(Set<String> actions) {
         Set<Set<String>> subsets = new LinkedHashSet<>();
 
-        String[] set = new String[actions.size()];
-        set = actions.toArray(set);
-        int n = set.length;
-        for (int i = 0; i < (1 << n); i++) {
-            Set<String> inner_set = new LinkedHashSet<>();
-
-            for (int j = 0; j < n; j++) {
-                if ((i & (1 << j)) > 0) {
-                    inner_set.add(set[j]);
-                }
-            }
-            subsets.add(inner_set);
-
-        }
         return subsets;
     }
 
