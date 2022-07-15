@@ -36,11 +36,11 @@ public class Functions {
      * @param pubReachProp    File to public property
      * @return Set of subsets that ensure full timed opacity
      */
-    public static Set<Set<String>> searchSubsets(Set<String> actions, File editedFile, String mode, String type, boolean include_unreach, File privReachProp, File pubReachProp) {
+    public static LinkedHashMap<Set<String>, String> searchSubsets(Set<String> actions, File editedFile, String mode, String type, boolean include_unreach, File privReachProp, File pubReachProp) {
         // Initalize action-subset search
         SetOfActions set = new SetOfActions(actions);
         Set<String> subset;
-        Set<Set<String>> result = new HashSet<>();
+        LinkedHashMap<Set<String>, String> result = new LinkedHashMap<>();
         boolean found = false;
         int sizeOfFound = actions.size() + 1; // More than all the possible sizes of subsets
 
@@ -72,7 +72,8 @@ public class Functions {
                 File polyopResult = getPolyopResultForModel(subsetTA, privImitatorResult, pubImitatorResult);
 
                 if (isOpaqueSubset(polyopResult)) {
-                    result.add(subset);
+                    String constraint = PolyopManip.getConstraint(privImitatorResult.getPath());
+                    result.put(subset, constraint);
 
                     if (Objects.equals(mode, "first")) {
                         return result;
@@ -86,11 +87,13 @@ public class Functions {
         return result;
     }
 
-    public static Set<Set<String>> getSubsetsToAllow(Set<String> model_actions, Set<Set<String>> subsetsToDisable) {
-        Set<Set<String>> subsetsToAllow = new LinkedHashSet<>();
+    public static LinkedHashMap<Set<String>, String> getSubsetsToAllow(Set<String> model_actions, LinkedHashMap<Set<String>, String> subsetsToDisable) {
+        LinkedHashMap<Set<String>, String> subsetsToAllow = new LinkedHashMap<>();
 
-        for (Set<String> subset : subsetsToDisable) {
-            subsetsToAllow.add(excludeActions(model_actions, subset));
+        for (Map.Entry<Set<String>, String> entry : subsetsToDisable.entrySet()) {
+            Set<String> subset = entry.getKey();
+            String constraint = entry.getValue();
+            subsetsToAllow.put(excludeActions(model_actions, subset), constraint);
         }
         return subsetsToAllow;
     }
@@ -219,16 +222,22 @@ public class Functions {
         return result;
     }
 
-    public static File writeActionSubset(File modelFile, Set<Set<String>> subsetsToAllow) {
+    public static File writeActionSubset(File modelFile, LinkedHashMap<Set<String>, String> subsetsToAllow) {
         String outputFileName = Params.nameOfActionSubsetOutput(modelFile);
         File outputFile = FilesManip.createFileNamed(outputFileName);
-        for (Set<String> subset : subsetsToAllow) {
+
+        for (Map.Entry<Set<String>, String> entry : subsetsToAllow.entrySet()) {
+            Set<String> subset = entry.getKey();
+            String constraint = entry.getValue();
 
             StringJoiner joiner = new StringJoiner(", ");
             for (String action : subset) {
                 joiner.add(action);
             }
-            FilesManip.addLine(outputFile, "{" + joiner + "}");
+
+            String constraintOutput = constraint.replace("\n", "");
+
+            FilesManip.addLine(outputFile, "{" + joiner + "} " + constraintOutput);
         }
         return outputFile;
     }

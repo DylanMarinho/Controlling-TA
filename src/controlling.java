@@ -6,10 +6,7 @@
 import utils.*;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /*
     ASSUMPTIONS:
@@ -130,16 +127,19 @@ public class controlling {
         File pubReachProp = ImitatorManip.createReachFile(editedTA, false, loc_final, loc_priv);
 
         // Deal the search
-        Set<Set<String>> subsetsToDisable = Functions.searchSubsets(actionSet, editedTA, mode, type, include_unreach, privReachProp, pubReachProp);
-        Set<Set<String>> subsetsToAllow = Functions.getSubsetsToAllow(allActions, subsetsToDisable);
+        LinkedHashMap<Set<String>, String> subsetsToDisable = Functions.searchSubsets(actionSet, editedTA, mode, type, include_unreach, privReachProp, pubReachProp);
+        LinkedHashMap<Set<String>, String> subsetsToAllow = Functions.getSubsetsToAllow(allActions, subsetsToDisable);
 
         // Write answer
         File outputFile = Functions.writeActionSubset(inputTA, subsetsToAllow);
 
         // Print answer
         System.out.println("----------------------------------------------------------");
-        System.out.println(" * [RESULT] Disabling actions: " + subsetsToDisable);
-        System.out.println(" * [RESULT] Found strategies: " + subsetsToAllow);
+        System.out.println(" * [RESULT] Disabling actions: ");
+        System.out.println(subsetsToDisable);
+        System.out.println("----------------------------------------------------------");
+        System.out.println(" * [RESULT] Found strategies: ");
+        System.out.println(subsetsToAllow);
         System.out.println("----------------------------------------------------------");
         System.out.println("Subsets of actions to keep that make the system fully opaque are written in " + outputFile.getPath());
     }
