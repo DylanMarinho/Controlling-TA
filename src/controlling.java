@@ -39,8 +39,8 @@ public class controlling {
             System.out.println(" * -exclude-unreach\t Exclude unreachable in opacity (otherwise, include them)");
             System.out.println(" * -lf [name]\t\t Name of the final location (default: " + Keyword.DEFAULT_LOC_FINAL.toString() + ")");
             System.out.println(" * -lpriv [name]\t Name of the private location (default: " + Keyword.DEFAULT_LOC_PRIV.toString() + ")");
-            System.out.println(" * -mode [mode]\t\t Set when to stop the search ('first', 'size', 'all') (default: " + Params.DEFAULT_MODE + ")");
-            System.out.println(" * -type [type]\t\t Type of stategies to find ('max', 'min') (default: " + Params.DEFAULT_TYPE + ")");
+            System.out.println(" * -find [find]\t\t Description of the set to find ('min', 'max', 'all') (default: " + Params.DEFAULT_FIND + ")");
+            System.out.println(" * -witness\t\t Stop as soon as a full timed-opaque strategy is found  (default: " + Params.DEFAULT_WITNESS + ")");
             return;
         }
 
@@ -66,31 +66,40 @@ public class controlling {
             loc_final = Keyword.DEFAULT_LOC_FINAL.toString();
         }
 
-        // Mode
-        String mode = clp.getArgumentValue("mode");
-        if (mode == null) {
-            mode = Params.DEFAULT_MODE;
+        // Find
+        String find = clp.getArgumentValue("find");
+        if (find == null) {
+            find = Params.DEFAULT_FIND;
         } else {
-            Set<String> allowedModeValues = new HashSet<>(List.of(new String[]{"first", "size", "all"}));
-            if (!allowedModeValues.contains(mode)) {
-                System.out.println("ERROR: mode value '" + mode + "' is not allowed");
+            Set<String> allowedFindValues = new HashSet<>(List.of(new String[]{"min", "max", "all"}));
+            if (!allowedFindValues.contains(find)) {
+                System.out.println("ERROR: find value '" + find + "' is not allowed");
                 return;
             }
         }
-        System.out.println(" * [OPTION] Mode: " + mode);
+        System.out.println(" * [OPTION] Find: " + find);
 
-        // Type
-        String type = clp.getArgumentValue("type");
-        if (type == null) {
-            type = Params.DEFAULT_TYPE;
+        // Witness
+        boolean witness = clp.getFlag("witness");
+        System.out.println(" * [OPTION] Witness mode: " + witness);
+
+        // Set params of the search
+        String mode;
+        String type;
+        if (find == "all" && !witness) {
+            // If find is all
+            mode = "all";
+            type = "max";
+        } else if (witness) {
+            // Find is not all but witness mode
+            mode = "first";
+            type = find;
         } else {
-            Set<String> allowedTypeValues = new HashSet<>(List.of(new String[]{"min", "max"}));
-            if (!allowedTypeValues.contains(type)) {
-                System.out.println("ERROR: type value '" + type + "' is not allowed");
-                return;
-            }
+            // No witness mode + find is min or max
+            mode = "size";
+            type = find;
         }
-        System.out.println(" * [OPTION] Type: " + type);
+
 
         //Actions
         String actions = clp.getArgumentValue("actions");
@@ -121,12 +130,13 @@ public class controlling {
         // Deal the search
         Set<Set<String>> subsetsToDisable = Functions.searchSubsets(actionSet, editedTA, mode, type, include_unreach, privReachProp, pubReachProp);
         Set<Set<String>> subsetsToAllow = Functions.getSubsetsToAllow(allActions, subsetsToDisable);
-        System.out.println(" * [RESULT] Found strategies: " + subsetsToAllow);
 
         // Write answer
         File outputFile = Functions.writeActionSubset(inputTA, subsetsToAllow);
 
         // Print answer
+        System.out.println("----------------------------------------------------------");
+        System.out.println(" * [RESULT] Found strategies: " + subsetsToAllow);
         System.out.println("----------------------------------------------------------");
         System.out.println("Subsets of actions to keep that make the system fully opaque are written in " + outputFile.getPath());
     }

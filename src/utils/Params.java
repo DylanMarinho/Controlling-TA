@@ -10,8 +10,8 @@ public class Params {
     static public String PathPolyop = "PolyOp32";
 
     // Default mode
-    static public String DEFAULT_MODE = "all";
-    static public String DEFAULT_TYPE = "max";
+    static public String DEFAULT_FIND = "all";
+    static public boolean DEFAULT_WITNESS = false;
 
     // Directory to store all outputs
     static public String pathToOutput = "output";
