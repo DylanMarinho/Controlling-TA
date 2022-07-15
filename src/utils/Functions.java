@@ -27,11 +27,16 @@ public class Functions {
     /**
      * Search for subsets of actions to ensure opacity
      *
-     * @param actions Set of actions
-     * @param mode    Mode of search (first / size / all)
+     * @param actions         Set of (controllable) actions
+     * @param editedFile      File of the editedTA
+     * @param mode            Mode of search (first / size / all)
+     * @param type            Type of result (max/min)
+     * @param include_unreach Include unreachable results
+     * @param privReachProp   File to private property
+     * @param pubReachProp    File to public property
      * @return Set of subsets that ensure full timed opacity
      */
-    public static Set<Set<String>> searchSubsets(Set<String> actions, File editedFile, String mode, boolean include_unreach, File privReachProp, File pubReachProp) {
+    public static Set<Set<String>> searchSubsets(Set<String> actions, File editedFile, String mode, String type, boolean include_unreach, File privReachProp, File pubReachProp) {
         // Initalize action-subset search
         SetOfActions set = new SetOfActions(actions);
         Set<String> subset;
@@ -47,7 +52,12 @@ public class Functions {
                 return result;
             }
 
-            subset = set.getSet();
+            if (Objects.equals(type, "max")) {
+                subset = set.getSet();
+            } else {
+                subset = excludeActions(actions, set.getSet());
+            }
+            ;
             File subsetTA = createSubsetTA(editedFile, subset);
 
             // Make runs and get results
@@ -76,16 +86,19 @@ public class Functions {
         return result;
     }
 
-    public static Set<Set<String>> getSubsetsToAllow(File inputTA, Set<Set<String>> subsetsToDisable) {
+    public static Set<Set<String>> getSubsetsToAllow(Set<String> model_actions, Set<Set<String>> subsetsToDisable) {
         Set<Set<String>> subsetsToAllow = new LinkedHashSet<>();
-        Set<String> model_actions = ImitatorManip.getActions(inputTA);
 
         for (Set<String> subset : subsetsToDisable) {
-            Set<String> model_copy = new HashSet<>(model_actions);
-            model_copy.removeAll(subset);
-            subsetsToAllow.add(model_copy);
+            subsetsToAllow.add(excludeActions(model_actions, subset));
         }
         return subsetsToAllow;
+    }
+
+    private static Set<String> excludeActions(Set<String> allActions, Set<String> toRemove) {
+        Set<String> copy = new HashSet<>(allActions);
+        copy.removeAll(toRemove);
+        return copy;
     }
 
     private static boolean considerSubset(File privImitatorResult, File pubImitatorResult, boolean include_unreach) {

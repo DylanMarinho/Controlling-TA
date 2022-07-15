@@ -40,6 +40,7 @@ public class controlling {
             System.out.println(" * -lf [name]\t\t Name of the final location (default: " + Keyword.DEFAULT_LOC_FINAL.toString() + ")");
             System.out.println(" * -lpriv [name]\t Name of the private location (default: " + Keyword.DEFAULT_LOC_PRIV.toString() + ")");
             System.out.println(" * -mode [mode]\t\t Set when to stop the search ('first', 'size', 'all') (default: " + Params.DEFAULT_MODE + ")");
+            System.out.println(" * -type [type]\t\t Type of stategies to find ('max', 'min') (default: " + Params.DEFAULT_TYPE + ")");
             return;
         }
 
@@ -65,6 +66,7 @@ public class controlling {
             loc_final = Keyword.DEFAULT_LOC_FINAL.toString();
         }
 
+        // Mode
         String mode = clp.getArgumentValue("mode");
         if (mode == null) {
             mode = Params.DEFAULT_MODE;
@@ -77,6 +79,19 @@ public class controlling {
         }
         System.out.println(" * [OPTION] Mode: " + mode);
 
+        // Type
+        String type = clp.getArgumentValue("type");
+        if (type == null) {
+            type = Params.DEFAULT_TYPE;
+        } else {
+            Set<String> allowedTypeValues = new HashSet<>(List.of(new String[]{"min", "max"}));
+            if (!allowedTypeValues.contains(type)) {
+                System.out.println("ERROR: type value '" + type + "' is not allowed");
+                return;
+            }
+        }
+        System.out.println(" * [OPTION] Type: " + type);
+
         //Actions
         String actions = clp.getArgumentValue("actions");
         boolean actionFlag = !(actions == null); //True is action are specified in a parameter
@@ -87,6 +102,9 @@ public class controlling {
 
         // Edit file (add variables, ...)
         File editedTA = ImitatorManip.createEditedTA(inputTA, loc_final, loc_priv);
+
+        // Get model actions
+        Set<String> allActions = ImitatorManip.getActions(editedTA);
 
         // Create the subset of TAs (TAs where some actions are disabled)
         Set<String> actionSet;
@@ -101,9 +119,9 @@ public class controlling {
         File pubReachProp = ImitatorManip.createReachFile(editedTA, false, loc_final, loc_priv);
 
         // Deal the search
-        Set<Set<String>> subsetsToDisable = Functions.searchSubsets(actionSet, editedTA, mode, include_unreach, privReachProp, pubReachProp);
-        Set<Set<String>> subsetsToAllow = Functions.getSubsetsToAllow(editedTA, subsetsToDisable);
-        System.out.println(subsetsToAllow);
+        Set<Set<String>> subsetsToDisable = Functions.searchSubsets(actionSet, editedTA, mode, type, include_unreach, privReachProp, pubReachProp);
+        Set<Set<String>> subsetsToAllow = Functions.getSubsetsToAllow(allActions, subsetsToDisable);
+        System.out.println(" * [RESULT] Found strategies: " + subsetsToAllow);
 
         // Write answer
         File outputFile = Functions.writeActionSubset(inputTA, subsetsToAllow);

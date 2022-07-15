@@ -1,7 +1,6 @@
 package utils;
 
 import java.io.File;
-import java.nio.file.Path;
 import java.util.StringJoiner;
 
 public class Params {
@@ -12,26 +11,34 @@ public class Params {
 
     // Default mode
     static public String DEFAULT_MODE = "all";
+    static public String DEFAULT_TYPE = "max";
 
     // Directory to store all outputs
     static public String pathToOutput = "output";
 
     // Define naming methods
-    /** Return the name for the edited TA
+
+    /**
+     * Return the name for the edited TA
+     *
      * @param inputFile Imi file in input (file.imi)
-     * @return Return name of edited version (file_edited.imi) */
+     * @return Return name of edited version (file_edited.imi)
+     */
     static public String nameOfEditedTA(File inputFile) {
         String inputName = FilesManip.getNameWithoutExtension(inputFile.getName());
         return String.format("%s_edited.imi", inputName);
     }
+
     static public String nameOfPrivateReachProperty(File inputFile) {
         String inputName = FilesManip.getNameWithoutExtension(inputFile.getName());
         return String.format("reachPriv_%s.imiprop", inputName);
     }
+
     static public String nameOfPublicReachProperty(File inputFile) {
         String inputName = FilesManip.getNameWithoutExtension(inputFile.getName());
         return String.format("reachPub_%s.imiprop", inputName);
     }
+
     static public String nameOfSubTA(File inputFile, StringJoiner joiner) {
         String fileNameWithoutExtension = FilesManip.getNameWithoutExtension(inputFile.getName());
         return String.format("%s_%s.imi", fileNameWithoutExtension, joiner);
