@@ -114,14 +114,16 @@ public class controlling {
 
         // Get model actions
         Set<String> allActions = ImitatorManip.getActions(editedTA);
+        System.out.println(" * [ACTIONS] Actions found in the model: " + allActions);
 
         // Create the subset of TAs (TAs where some actions are disabled)
         Set<String> actionSet;
         if (actionFlag) {
             actionSet = new HashSet<String>(Arrays.asList(actions.split(",")));
         } else {
-            actionSet = ImitatorManip.getActions(editedTA);
+            actionSet = allActions;
         }
+        System.out.println(" * [ACTIONS] Controllable actions: " + actionSet);
 
         // Create reachability property files
         File privReachProp = ImitatorManip.createReachFile(editedTA, true, loc_final, loc_priv);
@@ -136,6 +138,7 @@ public class controlling {
 
         // Print answer
         System.out.println("----------------------------------------------------------");
+        System.out.println(" * [RESULT] Disabling actions: " + subsetsToDisable);
         System.out.println(" * [RESULT] Found strategies: " + subsetsToAllow);
         System.out.println("----------------------------------------------------------");
         System.out.println("Subsets of actions to keep that make the system fully opaque are written in " + outputFile.getPath());

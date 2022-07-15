@@ -100,7 +100,7 @@ public class ImitatorManip {
 
     //TODO: Description
     private static void editDisablerAutomaton(File outputFile) {
-        String output_line = "(************************************************************)\n" + "  automaton disabler\n" + "(*** NOTE: the purpose of this automaton is to \"disable\" some actions by just declaring them as \"synclabs\" and subsequently NOT using them ***)\n" + "(************************************************************)\n" + "\n" + "(*** TAG begin synclabs ***)\n" + "synclabs: ;\n" + "(*** TAG end synclabs ***)\n" + "\n" + "loc dummy: invariant True\n" + "\n" + "\n" + "end (* disabled *)";
+        String output_line = "(************************************************************)\n" + "  automaton disabler\n" + "(*** NOTE: the purpose of this automaton is to \"disable\" some actions by just declaring them and subsequently NOT using them ***)\n" + "(************************************************************)\n" + "\n" + "(*** TAG begin synclabs ***)\n" + "synclabs: ;\n" + "(*** TAG end synclabs ***)\n" + "\n" + "loc dummy: invariant True\n" + "\n" + "\n" + "end (* disabled *)";
         try {
             FilesManip.addLine(outputFile, output_line);
             FilesManip.addLine(outputFile, Keyword.INIT.toString());
@@ -231,25 +231,39 @@ public class ImitatorManip {
         Set<String> result = new LinkedHashSet<>();
         try {
             Scanner scanner = new Scanner(inputFile);
-
+            StringBuilder synclabDef = new StringBuilder("");
+            boolean readingSynclab = false;
+            boolean endSynclab = false;
 
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
                 if (line.contains(Keyword.SYNCLABS.toString())) {
+                    readingSynclab = true;
+                }
+                if(readingSynclab) {
+                    synclabDef.append(line);
+                }
+                if(readingSynclab && line.contains(";")) {
+                    readingSynclab = false;
+                    endSynclab = true;
+                }
+
+                if(endSynclab) {
                     String pattern = String.format("%s:((.|\\n)*);", Keyword.SYNCLABS);
                     Pattern r = Pattern.compile(pattern);
-                    Matcher m = r.matcher(line);
+                    Matcher m = r.matcher(synclabDef);
                     if (m.find()) {
-
-
                         String[] temp_split = m.group(1).split(",");
 
                         for (String s : temp_split) {
-                            result.add(s.replaceAll("[^A-Za-z\\d]", ""));
+                            String toAdd = s.replaceAll("[^A-Za-z\\d]", "");
+                            if(!toAdd.equals("")) {
+                                result.add(toAdd);
+                            }
                         }
-                        break;
                     }
-
+                    endSynclab = false;
+                    synclabDef = new StringBuilder("");
                 }
 
             }
