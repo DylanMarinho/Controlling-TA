@@ -15,9 +15,13 @@ public class ImitatorManip {
     /**
      * Add needed variables in the PTA
      *
-     * @param outputFile File of the output of the edit
+     * @param outputFile   File of the output of the edit
+     * @param endWithComma True if the previous line ends with a comma
      */
-    private static void editVariables(File outputFile) {
+    private static void editVariables(File outputFile, boolean endWithComma) {
+        if (!endWithComma) {
+            FilesManip.addLine(outputFile, ",");
+        }
         FilesManip.addLine(outputFile, String.format("\t%s,", Keyword.T_ABS));
         FilesManip.addLine(outputFile, String.format("\t\t: %s;", Keyword.CLOCK));
         FilesManip.addLine(outputFile, String.format("\t%s,", Keyword.P_ABS));
@@ -75,8 +79,7 @@ public class ImitatorManip {
                                 ouput_goto_line.append((String.format("%s {%s, %s := True}", Keyword.DO, m.group(1), Keyword.VISITED_PRIV)));
                             } else if (do_found && !do_end && s.contains("}")) {
                                 do_end = true;
-                            }
-                            else if (!do_found || do_end) {
+                            } else if (!do_found || do_end) {
                                 ouput_goto_line.append(s).append(" ");
                             }
 
@@ -197,6 +200,7 @@ public class ImitatorManip {
         try {
             Scanner scanner = new Scanner(inputFile);
             boolean isCommentLines = false;
+            boolean endWithComma = false;
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
                 Pair<String, Boolean> pair = lineWithoutComment(line, isCommentLines);
@@ -204,7 +208,7 @@ public class ImitatorManip {
                 isCommentLines = pair.getValue();
 
                 if (line.contains(Keyword.CLOCK.toString())) {
-                    editVariables(outputFile);
+                    editVariables(outputFile, endWithComma);
                 } else if (line.contains(String.format("%s %s;", Keyword.GOTO, loc_final)) || line.contains(String.format("%s %s;", Keyword.GOTO, loc_priv))) {
                     editEdges(outputFile, line, loc_final, loc_priv);
                 } else if (line.contains(Keyword.INIT.toString())) {
@@ -214,6 +218,8 @@ public class ImitatorManip {
                 } else if (!line.equals("")) {
                     FilesManip.addLine(outputFile, line);
                 }
+
+                endWithComma = line.replace("\s", "").endsWith(",");
             }
         } catch (IOException ex) {
             ex.printStackTrace();
