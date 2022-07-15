@@ -277,43 +277,6 @@ public class ImitatorManip {
         return result;
     }
 
-    public static Set<String> getDisablerActions(File model) {
-        boolean disabler_found = false;
-        Set<String> result = new LinkedHashSet<>();
-        try {
-            Scanner scanner = new Scanner(model);
-
-            while (scanner.hasNextLine()) {
-                String line = scanner.nextLine();
-                if (line.contains(Keyword.SYNCLABS.toString()) && disabler_found) {
-                    String pattern = String.format("%s:((.|\\n)*);", Keyword.SYNCLABS);
-
-
-                    Pattern r = Pattern.compile(pattern);
-                    Matcher m = r.matcher(line);
-                    if (m.find()) {
-                        String[] temp_split = m.group(1).split(",");
-
-                        for (String s : temp_split) {
-                            result.add(s.replaceAll("[^A-Za-z\\d]", ""));
-                        }
-                        break;
-                    }
-
-                } else if (line.contains("disabler")) {
-                    disabler_found = true;
-                }
-
-            }
-
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-
-
-        return result;
-    }
-
     private static String getName(File inputTA) {
         String automatonName = "";
         try {

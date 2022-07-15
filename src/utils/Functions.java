@@ -6,24 +6,6 @@ import java.util.*;
 
 public class Functions {
 
-
-    /**
-     * From a set of actions, return all subsets
-     *
-     * @param actions Set of actions
-     * @return Set of all possible combinations of actions
-     */
-    public static Set<Set<String>> getSubsetsOfActions(Set<String> actions) {
-        SetOfActions set = new SetOfActions(actions);
-        Set<String> currentSubset;
-        Set<Set<String>> subsets = new LinkedHashSet<>();
-        while (set.increment()) {
-            currentSubset = set.getSet();
-            subsets.add(currentSubset);
-        }
-        return subsets;
-    }
-
     /**
      * Search for subsets of actions to ensure opacity
      *
