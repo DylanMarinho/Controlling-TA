@@ -83,11 +83,15 @@ public class controlling {
         // Set params of the search
         String mode;
         String type;
-        if (find == "all" && !witness) {
+        if (Objects.equals(find, "all") && !witness) {
             // If find is all
             mode = "all";
             type = "max";
-        } else if (witness) {
+        } else if (Objects.equals(find, "all") && witness) {
+            mode = "first";
+            type = "max";
+        }
+        else if (witness) {
             // Find is not all but witness mode
             mode = "first";
             type = find;
