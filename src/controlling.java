@@ -38,6 +38,10 @@ public class controlling {
             System.out.println(" * -lpriv [name]\t Name of the private location (default: " + Keyword.DEFAULT_LOC_PRIV.toString() + ")");
             System.out.println(" * -find [find]\t\t Description of the set to find ('min', 'max', 'all') (default: " + Params.DEFAULT_FIND + ")");
             System.out.println(" * -witness\t\t Stop as soon as a full timed-opaque strategy is found  (default: " + Params.DEFAULT_WITNESS + ")");
+            System.out.println("");
+            System.out.println("- Binary paths (optional):");
+            System.out.println(" * -imitator [path]\t Path to the binary file of IMITATOR  (default: " + Params.DEFAULT_PathImitator + ")");
+            System.out.println(" * -polyop [path]\t Path to the binary file of PolyOp  (default: " + Params.DEFAULT_PathPolyop + ")");
             return;
         }
 
@@ -90,8 +94,7 @@ public class controlling {
         } else if (Objects.equals(find, "all") && witness) {
             mode = "first";
             type = "max";
-        }
-        else if (witness) {
+        } else if (witness) {
             // Find is not all but witness mode
             mode = "first";
             type = find;
@@ -101,6 +104,17 @@ public class controlling {
             type = find;
         }
 
+        // IMITATOR and PolyOp paths
+        String imitator_path = clp.getArgumentValue("imitator");
+        if (imitator_path == null) {
+            imitator_path = Params.DEFAULT_PathImitator;
+        }
+        String polyop_path = clp.getArgumentValue("polyop");
+        if (polyop_path == null) {
+            polyop_path = Params.DEFAULT_PathPolyop;
+        }
+        System.out.println(" * [OPTION] Path to IMITATOR: " + imitator_path);
+        System.out.println(" * [OPTION] Path to PolyOp: " + polyop_path);
 
         //Actions
         String actions = clp.getArgumentValue("actions");
@@ -131,7 +145,7 @@ public class controlling {
         File pubReachProp = ImitatorManip.createReachFile(editedTA, false, loc_final, loc_priv);
 
         // Deal the search
-        LinkedHashMap<Set<String>, String> subsetsToDisable = Functions.searchSubsets(actionSet, editedTA, mode, type, include_unreach, privReachProp, pubReachProp);
+        LinkedHashMap<Set<String>, String> subsetsToDisable = Functions.searchSubsets(actionSet, editedTA, mode, type, include_unreach, privReachProp, pubReachProp, imitator_path, polyop_path);
         LinkedHashMap<Set<String>, String> subsetsToAllow = Functions.getSubsetsToAllow(allActions, subsetsToDisable);
 
         // Write answer

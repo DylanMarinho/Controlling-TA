@@ -18,7 +18,7 @@ public class Functions {
      * @param pubReachProp    File to public property
      * @return Set of subsets that ensure full timed opacity
      */
-    public static LinkedHashMap<Set<String>, String> searchSubsets(Set<String> actions, File editedFile, String mode, String type, boolean include_unreach, File privReachProp, File pubReachProp) {
+    public static LinkedHashMap<Set<String>, String> searchSubsets(Set<String> actions, File editedFile, String mode, String type, boolean include_unreach, File privReachProp, File pubReachProp, String imitator_path, String polyop_path) {
         // Initalize action-subset search
         SetOfActions set = new SetOfActions(actions);
         Set<String> subset;
@@ -43,15 +43,15 @@ public class Functions {
             File subsetTA = createSubsetTA(editedFile, subset);
 
             // Make runs and get results
-            File privImitatorResult = getImitatorResultsForModel(subsetTA, privReachProp, "privReach_");
-            File pubImitatorResult = getImitatorResultsForModel(subsetTA, pubReachProp, "pubReach_");
+            File privImitatorResult = getImitatorResultsForModel(subsetTA, privReachProp, "privReach_", imitator_path);
+            File pubImitatorResult = getImitatorResultsForModel(subsetTA, pubReachProp, "pubReach_", imitator_path);
 
             // Check if the result has to be considered
             // eg. do not consider unreachable if include_unreachable is set to false
             if (considerSubset(privImitatorResult, pubImitatorResult, include_unreach)) {
 
                 // Run polyop and get result
-                File polyopResult = getPolyopResultForModel(subsetTA, privImitatorResult, pubImitatorResult);
+                File polyopResult = getPolyopResultForModel(subsetTA, privImitatorResult, pubImitatorResult, polyop_path);
 
                 if (isOpaqueSubset(polyopResult)) {
                     String constraint = PolyopManip.getConstraint(privImitatorResult.getPath());
@@ -172,12 +172,12 @@ public class Functions {
         }
     }
 
-    private static File getImitatorResultsForModel(File model, File propertyFile, String outputPrefix) {
+    private static File getImitatorResultsForModel(File model, File propertyFile, String outputPrefix, String imitator_path) {
         String propertyPath = propertyFile.getPath();
         String res_name_without_extension = Params.nameOfResImitatorFile(model.getName(), outputPrefix);
 
         //Run
-        String[] cmd = {Params.PathImitator, model.getPath(), propertyPath, "-output-prefix", Params.pathToOutput + "/" + res_name_without_extension};
+        String[] cmd = {imitator_path, model.getPath(), propertyPath, "-output-prefix", Params.pathToOutput + "/" + res_name_without_extension};
         runTerminal(cmd);
 
         String res_name_with_extension = res_name_without_extension + ".res";
@@ -185,7 +185,7 @@ public class Functions {
         return new File(Params.pathToOutput + "/" + res_name_with_extension);
     }
 
-    private static File getPolyopResultForModel(File inputModel, File privImitatorResult, File pubImitatorResult) {
+    private static File getPolyopResultForModel(File inputModel, File privImitatorResult, File pubImitatorResult, String polyop_path) {
         String privPath = privImitatorResult.getPath();
         String pubPath = pubImitatorResult.getPath();
 
@@ -198,7 +198,7 @@ public class Functions {
         String content = String.format("equal (%s,%s)", pubConstraint, privConstraint);
         FilesManip.writeToFile(content, polyOpPath, false);
 
-        runTerminal(new String[]{Params.PathPolyop, polyOpPath.getPath()});
+        runTerminal(new String[]{polyop_path, polyOpPath.getPath()});
         String resPath = polyOpPath.getPath() + ".res";
         File result = new File(resPath);
         return result;

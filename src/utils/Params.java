@@ -5,9 +5,9 @@ import java.util.StringJoiner;
 
 public class Params {
     // Polyop and IMITATOR are supposed to be known in the PATH
-    // If not, it is possible to update the path here:
-    static public String PathImitator = "imitator";
-    static public String PathPolyop = "PolyOp32";
+    // If not, it is possible to define the path as arguments
+    static public String DEFAULT_PathImitator = "imitator";
+    static public String DEFAULT_PathPolyop = "polyop";
 
     // Default mode
     static public String DEFAULT_FIND = "all";
