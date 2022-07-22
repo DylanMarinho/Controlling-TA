@@ -8,11 +8,6 @@ import utils.*;
 import java.io.File;
 import java.util.*;
 
-/*
-    ASSUMPTIONS:
-    • File should contain a single automaton.
-*/
-
 
 public class controlling {
 
