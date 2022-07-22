@@ -23,7 +23,7 @@ The options that can be used while calling X are the followings:
  * -lf [name]		 	Name of the final location (default: qf)
  * -lpriv [name]	 	Name of the private location (default: qpriv)
  * -find [find]		 	Description of the set to find ('min', 'max', 'all') (default: all)
- * -witness		 		Stop as soon as a full timed-opaque strategy is found  (default: false)
+ * -witness		 	Stop as soon as a full timed-opaque strategy is found  (default: false)
 
 - Binary paths (optional):
  * -imitator [path]		Path to the binary file of IMITATOR  (default: imitator)
