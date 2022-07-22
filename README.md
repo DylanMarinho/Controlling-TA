@@ -14,11 +14,11 @@ A basic call to the tool can be performed with:
 
 The options that can be used while calling X are the followings:
 ```
-	- Required:
+- Required:
  * -file [path]		 Path to the imi file [REQUIRED]
 
-	- Optional:
- * -actions [actions]	List of controllable actions, separated with a comma (if not set, use all actions)
+- Optional:
+ * -actions [actions]		List of controllable actions, separated with a comma (if not set, use all actions)
  * -efficient	 		Exclude non efficient strategies in opacity (otherwise, include them)
  * -lf [name]		 	Name of the final location (default: qf)
  * -lpriv [name]	 	Name of the private location (default: qpriv)
@@ -26,6 +26,6 @@ The options that can be used while calling X are the followings:
  * -witness		 		Stop as soon as a full timed-opaque strategy is found  (default: false)
 
 - Binary paths (optional):
- * -imitator [path]	Path to the binary file of IMITATOR  (default: imitator)
+ * -imitator [path]		Path to the binary file of IMITATOR  (default: imitator)
  * -polyop [path]	 	Path to the binary file of PolyOp  (default: polyop)
 ```
