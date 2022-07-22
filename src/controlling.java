@@ -32,8 +32,8 @@ public class controlling {
             System.out.println(" * -file [path]\t\t Path to the imi file [REQUIRED]");
             System.out.println("");
             System.out.println("- Optional:");
-            System.out.println(" * -actions [actions]\t Controllable actions, separated with a comma (is not set, use all actions of the first automaton)");
-            System.out.println(" * -exclude-unreach\t Exclude unreachable in opacity (otherwise, include them)");
+            System.out.println(" * -actions [actions]\t List of controllable actions, separated with a comma (is not set, use all actions of the first automaton)");
+            System.out.println(" * -efficient\t\t Exclude non efficient strategies in opacity (otherwise, include them)");
             System.out.println(" * -lf [name]\t\t Name of the final location (default: " + Keyword.DEFAULT_LOC_FINAL.toString() + ")");
             System.out.println(" * -lpriv [name]\t Name of the private location (default: " + Keyword.DEFAULT_LOC_PRIV.toString() + ")");
             System.out.println(" * -find [find]\t\t Description of the set to find ('min', 'max', 'all') (default: " + Params.DEFAULT_FIND + ")");
@@ -53,7 +53,7 @@ public class controlling {
         }
 
         // if the flag -exclude-unreach is set, exclude. Otherwise, include
-        include_unreach = !(clp.getFlag("excludeunreach"));
+        include_unreach = !(clp.getFlag("efficient"));
         //NOTE: there is no - between words in getFlag! (cf. getFlag() with replace("-","")
         System.out.println(" * [OPTION] Unreachable are included: " + include_unreach);
 
